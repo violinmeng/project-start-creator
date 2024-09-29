@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 {{/isTest}}
 
-{{#isMain}}
+{{#isExecutable}}
 #include <iostream>
 #include <exception>
 
@@ -21,7 +21,7 @@ int main()
     return 1;
   }
 }
-{{/isMain}}
+{{/isExecutable}}
 
 {{#isTest}}
 TEST(Test, {{fileName}})

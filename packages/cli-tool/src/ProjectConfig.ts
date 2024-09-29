@@ -11,6 +11,7 @@ export class Target {
     type: TargetType;
     name: string;
     dependencies?: string[];
+    dependencyTargets?: Target[];
 
     constructor(type: TargetType, name: string, dependencies?: string[]) {
         this.type = type;
@@ -67,6 +68,15 @@ export class ProjectConfig {
                 default:
                     throw new Error(`未知的目标类型: ${targetData.type}`);
             }
+        });
+        this.targets.forEach((target) => {
+            target.dependencyTargets = target.dependencies?.map((dependency: string) => {
+                const dependencyTarget = this.targets.find((t) => t.name === dependency);
+                if (!dependencyTarget) {
+                    return new LibTarget(dependency);
+                }
+                return dependencyTarget;
+            });
         });
     }
 
