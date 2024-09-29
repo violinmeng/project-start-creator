@@ -64,7 +64,7 @@ export class CppProjectCreator extends ProjectCreator {
                 fs.readFileSync(path.join(TEMPLATE_DIR, CMAKE_MUSTACHE), 'utf-8'), 
                 createViewHelpers({
                     projectName: this.config.rootDir,
-                    includeDependencies: this.config.getIncludeTarget(),
+                    includeTargets: this.config.getIncludeTarget(),
                     executableTargets: this.config.getExecutableTarget(),
                     libTargets: this.config.getLibTarget(),
                     testTargets: this.config.getTestTarget(),
@@ -106,14 +106,16 @@ export class CppProjectCreator extends ProjectCreator {
 
     // create excutable dir if needed
     private createExcutableDirIfNeeded(projectDir: string): void {
-        const excutableDir = path.join(projectDir, BIN_NAME);
-        fs.mkdirSync(excutableDir);
 
         if (this.config.getExecutableTarget().length != 1) {
             console.error('Exactly one executable target is required.');
             return;
         }
+
         const target = this.config.getExecutableTarget()[0];
+
+        const excutableDir = path.join(projectDir, target.name);
+        fs.mkdirSync(excutableDir);
 
         // create main.cpp in excutable dir
         this.createSourceFileInDir(excutableDir, BIN_MAIN_FILE, target);
@@ -154,15 +156,15 @@ export class CppProjectCreator extends ProjectCreator {
             this.createHeaderFileInDir(includeDir, target.name);
 
             // create CMakeLists.txt in lib dir
-            const cmakeListsFile = path.join(libDir, CMAKE_LIST_FILE);
+            const cmakeListsFile = path.join(targetDir, CMAKE_LIST_FILE);
             fs.writeFileSync(
                 cmakeListsFile, 
                 Mustache.render(
                     fs.readFileSync(path.join(LIB_DIR, CMAKE_MUSTACHE), 'utf-8'), 
                     createViewHelpers({
                         targetName: target.name,
-                        includeDependencies: target?.dependencies?.filter(dependency => dependency === TargetType.Include),
-                        libDependencies: target?.dependencies?.filter(dependency => dependency === TargetType.Lib),
+                        includeDependencies: target?.dependencies?.filter(dependency => this.config.getIncludeTarget().map(target => target.name).includes(dependency)),
+                        libDependencies: target?.dependencies?.filter(dependency => this.config.getLibTarget().map(target => target.name).includes(dependency)),
                     })
                 )
             );
@@ -171,11 +173,16 @@ export class CppProjectCreator extends ProjectCreator {
 
     // create tests dir if needed
     private createTestsDirIfNeeded(projectDir: string): void {
-        const testsDir = path.join(projectDir, TESTS_NAME);
-        fs.mkdirSync(testsDir);
 
         // create sub dir in tests dir
         const testsTarget = this.config.getTestTarget();
+        if (testsTarget.length === 0) {
+            return;
+        }
+
+        const testsDir = path.join(projectDir, TESTS_NAME);
+        fs.mkdirSync(testsDir);
+
         testsTarget.forEach(target => {
             const targetDir = path.join(testsDir, target.name);
             fs.mkdirSync(targetDir);
@@ -191,15 +198,13 @@ export class CppProjectCreator extends ProjectCreator {
                     fs.readFileSync(path.join(TESTS_DIR, CMAKE_MUSTACHE), 'utf-8'), 
                     createViewHelpers({
                         targetName: target.name,
-                        includeDependencies: target?.dependencies?.filter(dependency => dependency === TargetType.Include),
-                        libDependencies: target?.dependencies?.filter(dependency => dependency === TargetType.Lib),
+                        includeDependencies: target?.dependencies?.filter(dependency => this.config.getIncludeTarget().map(target => target.name).includes(dependency)),
+                        libDependencies: target?.dependencies?.filter(dependency => this.config.getLibTarget().map(target => target.name).includes(dependency)),
                     })
                 )
             );
         });
     }
-
-    
 
     // create header file in given dir
     private createHeaderFileInDir(dir: string, fileName: string): void {

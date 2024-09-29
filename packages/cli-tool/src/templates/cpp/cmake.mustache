@@ -11,6 +11,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
+{{#testTargets}}
 # 添加Google Test
 include(FetchContent)
 FetchContent_Declare(
@@ -20,6 +21,7 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+{{/testTargets}}
 
 # 添加基础库
 {{#includeTargets}}
@@ -34,11 +36,14 @@ add_subdirectory(lib/{{name}})
 
 
 {{#executableTargets}}
-add_subdirectory(src/{{name}})
+add_subdirectory({{name}})
 {{/executableTargets}}
 
+{{#testTargets}}
 # 启用测试
 enable_testing()
+{{/testTargets}}
+
 {{#testTargets}}
 add_subdirectory(tests/{{name}})
 {{/testTargets}}
