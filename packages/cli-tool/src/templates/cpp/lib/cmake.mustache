@@ -1,0 +1,12 @@
+add_library({{targetName}} STATIC
+    include/{{targetName}}.h
+    {{targetName}}.cpp
+)
+
+target_link_libraries({{targetName}} PUBLIC {{#includeDependencies}}{{name}} {{/includeDependencies}})
+target_include_directories({{targetName}} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries({{targetName}}
+    {{#libDependencies}}
+    {{.}}
+    {{/libDependencies}}
+)

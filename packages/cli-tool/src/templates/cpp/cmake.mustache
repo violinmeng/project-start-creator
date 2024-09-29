@@ -1,0 +1,44 @@
+cmake_minimum_required(VERSION 3.10)
+project({{projectName}})
+
+set(CMAKE_CXX_STANDARD 14)
+
+# 启用 clang-tidy
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+  if(CLANG_TIDY_EXE)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
+  endif()
+endif()
+
+# 添加Google Test
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# 添加基础库
+{{#includeTargets}}
+add_library({{name}} INTERFACE)
+target_include_directories({{name}} INTERFACE include)
+{{/includeTargets}}
+
+# 添加子目录
+{{#libTargets}}
+add_subdirectory(lib/{{name}})
+{{/libTargets}}
+
+
+{{#executableTargets}}
+add_subdirectory(src/{{name}})
+{{/executableTargets}}
+
+# 启用测试
+enable_testing()
+{{#testTargets}}
+add_subdirectory(tests/{{name}})
+{{/testTargets}}

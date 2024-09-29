@@ -1,0 +1,84 @@
+# 编译输出
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+
+# CMake生成的文件和目录
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+Makefile
+*.cmake
+
+# 构建目录
+build/
+Debug/
+Release/
+x64/
+x86/
+
+# IDE生成的文件和目录
+.vscode/
+.idea/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# 依赖管理工具生成的目录
+vcpkg_installed/
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# 备份文件
+*.bak
+*~
+
+# 压缩文件
+*.7z
+*.zip
+*.tar.gz
+*.rar
+
+# 文档生成工具输出
+doc/
+docs/
+
+# 代码覆盖率工具输出
+*.gcno
+*.gcda
+*.gcov
+
+# 性能分析工具输出
+gmon.out
+
+# 单元测试框架生成的文件
+Testing/
+
+# 第三方库（如果使用git submodule管理，则不需要忽略）
+# third_party/
+
+# 特定于项目的忽略项
+# 如果有特定于您项目的文件或目录需要忽略，请在此处添加

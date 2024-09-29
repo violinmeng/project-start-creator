@@ -1,0 +1,36 @@
+{
+  "name": "cli-tool",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "bin": {
+    "cli-tool": "./bin/project-creator.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean && rollup -c",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mustache": "^4.2.5",
+    "commander": "^12.1.0",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@types/node": "^22.7.3",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.22.4",
+    "rollup-plugin-copy": "^3.5.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.7.0",
+    "typescript": "^5.6.2"
+  }
+}

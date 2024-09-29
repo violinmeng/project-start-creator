@@ -1,0 +1,16 @@
+add_executable(test_${{targetName}}
+    test_${{targetName}}.cpp
+)
+
+target_link_libraries(test_${{targetName}}
+    gtest_main
+    {{#includeDependencies}}
+    {{.}}
+    {{/includeDependencies}}
+    {{#libDependencies}}
+    {{.}}
+    {{/libDependencies}}
+)
+
+include(GoogleTest)
+gtest_discover_tests(test_${{targetName}})

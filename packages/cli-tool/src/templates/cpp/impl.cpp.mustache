@@ -1,0 +1,26 @@
+{{#dependencies}}
+#include "{{.}}.h"
+{{/dependencies}}
+{{#isTest}}
+#include <gtest/gtest.h>
+{{/isTest}}
+
+{{#isMain}}
+int main()
+{
+  try {
+    // code here
+    return 0;
+  } catch (const std::exception &e) {
+    std::cerr << "Error: " << e.what() << "\n";
+    return 1;
+  }
+}
+{{/isMain}}
+
+{{#isTest}}
+TEST(Test, {{fileName}})
+{
+  EXPECT_EQ(0, 0);
+}
+{{/isTest}}

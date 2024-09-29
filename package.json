@@ -1,0 +1,12 @@
+{
+  "name": "my-workspace-project",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test"
+  }
+}
