@@ -1,0 +1,25 @@
+{
+  "name": "project-creator-base",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "module": "./dist/index.js",
+  "exports": {
+    "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js"
+  },
+  "types":  "./dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "dependencies": {
+    "@types/mustache": "^4.2.5",
+    "mustache": "^4.2.0"
+  }
+}

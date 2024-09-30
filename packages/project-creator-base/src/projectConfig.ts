@@ -17,6 +17,7 @@ export class Target {
         this.type = type;
         this.name = name;
         this.dependencies = dependencies;
+        this.dependencyTargets = [];
     }
 }
 

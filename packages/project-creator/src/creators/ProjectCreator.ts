@@ -1,4 +1,4 @@
-import { ProjectConfig } from "../ProjectConfig";
+import { ProjectConfig } from 'project-creator-base';
 export abstract class ProjectCreator {
     protected config: ProjectConfig;
 

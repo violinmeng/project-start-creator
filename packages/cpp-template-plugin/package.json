@@ -1,0 +1,21 @@
+{
+  "name": "cpp-template-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "module": "./dist/index.js",
+  "exports": {
+    "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js"
+  },
+  "types":  "./dist/src/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "project-creator-base" : "workspace:*"
+  }
+}

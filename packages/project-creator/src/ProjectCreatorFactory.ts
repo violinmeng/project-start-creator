@@ -1,10 +1,10 @@
-import { ProjectConfig } from "./ProjectConfig";
 import { ProjectCreator } from "./creators/ProjectCreator";
 import { CppProjectCreator } from "./creators/CppProjectCreator";
 import { SwiftProjectCreator } from "./creators/SwiftProjectCreator";
 import { RustProjectCreator } from "./creators/RustProjectCreator";
 import { JavascriptProjectCreator } from "./creators/JavascriptProjectCreator";
 import { TypescriptProjectCreator } from "./creators/TypescriptProjectCreator";
+import { ProjectConfig } from 'project-creator-base';
 
 export enum Language {
     CPP = 'cpp',

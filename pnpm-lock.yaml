@@ -6,19 +6,7 @@ settings:
 
 importers:
 
-  .: {}
-
-  packages/cli-tool:
-    dependencies:
-      '@types/mustache':
-        specifier: ^4.2.5
-        version: 4.2.5
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-      mustache:
-        specifier: ^4.2.0
-        version: 4.2.0
+  .:
     devDependencies:
       '@rollup/plugin-commonjs':
         specifier: ^28.0.0
@@ -50,6 +38,33 @@ importers:
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
+
+  packages/cpp-template-plugin:
+    dependencies:
+      project-creator-base:
+        specifier: workspace:*
+        version: link:../project-creator-base
+
+  packages/project-creator:
+    dependencies:
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      cpp-template-plugin:
+        specifier: workspace:*
+        version: link:../cpp-template-plugin
+      project-creator-base:
+        specifier: workspace:*
+        version: link:../project-creator-base
+
+  packages/project-creator-base:
+    dependencies:
+      '@types/mustache':
+        specifier: ^4.2.5
+        version: 4.2.5
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
 
 packages:
 

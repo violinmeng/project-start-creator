@@ -2,7 +2,7 @@
 
 import { Command } from 'commander';
 import * as path from 'path';
-import { ProjectConfig } from './ProjectConfig';
+import { ProjectConfig } from 'project-creator-base';
 import { ProjectCreatorFactory, Language } from './ProjectCreatorFactory';
 
 const program = new Command();

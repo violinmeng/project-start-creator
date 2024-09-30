@@ -1,7 +1,7 @@
 import { ProjectCreator } from "./ProjectCreator";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { CreateProcess } from '../templates/cpp/CreateProcess'
+import { CppCreateProcess } from "cpp-template-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +17,7 @@ export class CppProjectCreator extends ProjectCreator {
             return;
         }
 
-        const createProcess = new CreateProcess(this.config, process.cwd());
+        const createProcess = new CppCreateProcess(this.config, process.cwd());
         createProcess.create();
     }
 }

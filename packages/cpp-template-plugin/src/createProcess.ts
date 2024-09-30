@@ -1,15 +1,15 @@
-import fs from 'fs';
 import path from 'path';
-import { IncludeTarget, ExecutableTarget, LibTarget, TestTarget, Target, TargetType } from '../../ProjectConfig';
-import Mustache from 'mustache';
-import { ProjectConfig } from '../../ProjectConfig';
+import { IncludeTarget, ExecutableTarget, LibTarget, TestTarget, Target, TargetType } from 'project-creator-base';
 import { fileURLToPath } from 'url';
+import { TemplateWorkSpace } from 'project-creator-base';
+
+import { ProjectConfig } from 'project-creator-base';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const templateInfo = {
-    path: path.join(__dirname, './templates/cpp'),
+const templateInfo = {
+    path: path.join(__dirname, './template'),
     copyLists: [
         '.clang-format',
         '.clang-tidy',
@@ -18,51 +18,7 @@ export const templateInfo = {
     ],
 }
 
-export class WorkSpace {
-    private dir: string;
-
-    constructor(dir: string) {
-        this.dir = dir;
-        // if dir not exists, create it
-        if (!fs.existsSync(dir)) {
-            try {
-                fs.mkdirSync(dir);
-            } catch (error) {
-                console.error(`[ERROR] [Workspace] [Constructor] Failed to create directory ${dir}: ${error}`);
-                throw error;
-            }
-        }
-    }
-
-    public mkSubDir(relativePath: string): WorkSpace {
-        try {
-            fs.mkdirSync(path.join(this.dir, relativePath));
-            return new WorkSpace(path.join(this.dir, relativePath));
-        } catch (error) {
-            console.error(`[ERROR] [Workspace] [mkdir] Failed to create directory ${this.dir}: ${error}`);
-            throw error;
-        }
-    }
-
-    public copyFromTemplate(templatePath: string,): void {
-        try {
-            fs.copyFileSync(path.join(templateInfo.path, templatePath), path.join(this.dir, templatePath));
-        } catch (error) {
-            console.error(`[ERROR] [Workspace] [copyFromTemplate] Failed to copy file from ${templatePath} to ${this.dir}: ${error}`);
-            throw error;
-        }
-    }
-
-    public createFromTemplate(mustachePath: string, fileName: string, data: any): void {
-        const templatePath = path.join(templateInfo.path, mustachePath);
-        const outputPath = path.join(this.dir, fileName);
-        const template = fs.readFileSync(templatePath, 'utf8');
-        const output = Mustache.render(template, data);
-        fs.writeFileSync(outputPath, output);
-    }
-}
-
-export const targetMustacheData = (data: Target) => ({
+const targetMustacheData = (data: Target) => ({
     ...data,
     libDependencies: data.dependencyTargets?.filter(dependency => dependency.type === TargetType.Lib).map(target => target.name),
     executableDependencies: data.dependencyTargets?.filter(dependency => dependency.type === TargetType.Executable).map(target => target.name),
@@ -77,8 +33,8 @@ export const targetMustacheData = (data: Target) => ({
     toLower: () => (text: string, render: (value: string) => string) => render(text).toLowerCase(),
 });
 
-export const targetActions = {
-    include: (rootWorkspace: WorkSpace, targets: IncludeTarget[]) => {
+const targetActions = {
+    include: (rootWorkspace: TemplateWorkSpace, targets: IncludeTarget[]) => {
         if (!targets.length) {
             return;
         }
@@ -88,7 +44,7 @@ export const targetActions = {
             targetDir.createFromTemplate("header.hpp.mustache", target.name, targetMustacheData(target));
         });
     },
-    executable: (rootWorkspace: WorkSpace, targets: ExecutableTarget[]) => {
+    executable: (rootWorkspace: TemplateWorkSpace, targets: ExecutableTarget[]) => {
         if (!targets.length) {
             return;
         }
@@ -99,7 +55,7 @@ export const targetActions = {
             targetDir.createFromTemplate("bin/cmake.mustache", "CMakeLists.txt", targetMustacheData(target));
         });
     },
-    library: (rootWorkspace: WorkSpace, targets: LibTarget[]) => {
+    library: (rootWorkspace: TemplateWorkSpace, targets: LibTarget[]) => {
         if (!targets.length) {
             return;
         }
@@ -112,7 +68,7 @@ export const targetActions = {
             includeDir.createFromTemplate("header.hpp.mustache", `${target.name}.hpp`, targetMustacheData(target));
         });
     },
-    test: (rootWorkspace: WorkSpace, targets: TestTarget[]) => {
+    test: (rootWorkspace: TemplateWorkSpace, targets: TestTarget[]) => {
         if (!targets.length) {
             return;
         }
@@ -123,16 +79,16 @@ export const targetActions = {
             targetDir.createFromTemplate("tests/cmake.mustache", "CMakeLists.txt", targetMustacheData(target));
         });
     },
-    copy: (rootWorkspace: WorkSpace) => {
+    copy: (rootWorkspace: TemplateWorkSpace) => {
         templateInfo.copyLists.map(path => {
             rootWorkspace.copyFromTemplate(path);
         });
     }
 }
 
-export class CreateProcess {
+export class CppCreateProcess {
     private projectConfig: ProjectConfig;
-    private rootWorkSpace?: WorkSpace;
+    private rootWorkSpace?: TemplateWorkSpace;
 
     constructor(projectConfig: ProjectConfig, currentWorkDir: string) {
         this.projectConfig = projectConfig;
@@ -140,8 +96,10 @@ export class CreateProcess {
         } else {
 
         }
+        console.log(__filename);
+        
         try {
-            this.rootWorkSpace = new WorkSpace(path.join(currentWorkDir, projectConfig.rootDir));
+            this.rootWorkSpace = new TemplateWorkSpace(path.join(currentWorkDir, projectConfig.rootDir), templateInfo.path);
         } catch (error) {
             console.error('create root workspace failed.');
         }
@@ -163,7 +121,6 @@ export class CreateProcess {
             libTargets: this.projectConfig.getLibTarget(),
             testTargets: this.projectConfig.getTestTarget(),
         });
-
     }
 }
 
