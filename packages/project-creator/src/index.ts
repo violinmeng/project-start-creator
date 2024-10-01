@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import * as path from 'path';
 import { ProjectConfig } from 'project-creator-base';
-import { ProjectCreatorFactory, Language } from './ProjectCreatorFactory';
+import { ProjectCreatorFactory } from './projectCreatorFactory';
 
 const program = new Command();
 
@@ -15,10 +15,6 @@ program
 
 program.parse(process.argv);
 const lang = program.opts().lang;
-if (lang && !Object.values(Language).includes(lang as Language)) {
-  console.error('无效的语言选项');
-  process.exit(1);
-}
 
 const loadProjectConfig = async () => {
     const currentDir = process.cwd();
@@ -43,15 +39,8 @@ if (!config) {
   process.exit(1);
 }
 
-// only cpp project can have include target
-if (config.getIncludeTarget().length > 0 && lang !== Language.CPP) {
-    console.error('only cpp project can have include target');
-    process.exit(1);
+const createProject = (lang: string) => {
+    ProjectCreatorFactory.createProjectCreator(lang, config);
 }
 
-const createProject = (lang: Language) => {
-    const creator = ProjectCreatorFactory.createProjectCreator(lang, config);
-    creator.createProject();
-}
-
-createProject(lang as Language);
+createProject(lang as string);

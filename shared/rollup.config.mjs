@@ -1,11 +1,4 @@
-// import copy from 'rollup-plugin-copy';
-// import path from "path";
-// import { fileURLToPath } from "url";
-
-
-
 import { builtinModules } from 'module';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
@@ -23,22 +16,14 @@ export function createConfig({ pkg, external = [] }) {
       .concat(Object.keys(pkg.peerDependencies || {}))
       .concat(builtinModules)
       .concat(external),
-    // onwarn: (warning) => {
-    //   throw Object.assign(new Error(), warning);
-    // },
+    onwarn: (warning) => {
+      throw Object.assign(new Error(), warning);
+    },
     strictDeprecations: true,
     output: [
-      // {
-      //   format: 'cjs',
-      //   file: pkg.main,
-      //   exports: 'named',
-      //   footer: 'module.exports = Object.assign(exports.default, exports);',
-      //   sourcemap: true
-      // },
       {
         format: 'es',
         file: pkg.module,
-        // plugins: [emitModulePackageFile()],
         sourcemap: true
       }
     ],
@@ -62,32 +47,3 @@ export function emitModulePackageFile() {
     }
   };
 }
-
-
-// const tasks = subModuleNames.map((name) => ({
-//   input: path.resolve(packagesDir, name, "src", `${libraryName}.ts`),
-//   output: {
-//     dir: path.resolve(packagesDir, name, "dist"),
-//     name: libraryName,
-//     format: "esm",
-//     sourcemap: true,
-//   },
-//   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-//   external: ['path', 'fs'],
-//   watch: {
-//     include: `packages/${name}/src/**`,
-//   },
-//   plugins: [
-//     typescript(),
-//     resolve(),
-//     commonjs(),
-//     // copy({
-//     //   targets: [
-//     //     { src: 'src/templates/*', dest: 'dist/templates' },
-//     //     { src: 'src/templates/app/*', dest: 'dist/templates/app' }
-//     //   ]
-//     // })
-//   ],
-// }));
-
-// export default tasks;

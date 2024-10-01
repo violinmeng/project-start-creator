@@ -1,2 +1,2 @@
 
-export { CppCreateProcess } from "./createProcess"
+export { CppLangCreatorPlugin } from "./createProcess"

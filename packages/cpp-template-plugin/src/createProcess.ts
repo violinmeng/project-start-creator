@@ -3,7 +3,7 @@ import { IncludeTarget, ExecutableTarget, LibTarget, TestTarget, Target, TargetT
 import { fileURLToPath } from 'url';
 import { TemplateWorkSpace } from 'project-creator-base';
 
-import { ProjectConfig } from 'project-creator-base';
+import { ProjectConfig, LangCreatorPlugin } from 'project-creator-base';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -86,17 +86,16 @@ const targetActions = {
     }
 }
 
-export class CppCreateProcess {
-    private projectConfig: ProjectConfig;
+export class CppLangCreatorPlugin extends LangCreatorPlugin {
     private rootWorkSpace?: TemplateWorkSpace;
 
     constructor(projectConfig: ProjectConfig, currentWorkDir: string) {
+        super(projectConfig, currentWorkDir);
         this.projectConfig = projectConfig;
         if (projectConfig.rootDir.length) {
         } else {
 
         }
-        console.log(__filename);
         
         try {
             this.rootWorkSpace = new TemplateWorkSpace(path.join(currentWorkDir, projectConfig.rootDir), templateInfo.path);
@@ -105,7 +104,20 @@ export class CppCreateProcess {
         }
     }
 
-    public create(): void {
+    supportLang(): string {
+        return 'cpp';
+    }
+
+    supportTargetTypes(): Set<TargetType> {
+        return new Set([
+            TargetType.Executable,
+            TargetType.Include,
+            TargetType.Lib,
+            TargetType.Test
+        ])
+    }
+
+    createProject(): void {
         if (!this.rootWorkSpace) {
             return;
         }

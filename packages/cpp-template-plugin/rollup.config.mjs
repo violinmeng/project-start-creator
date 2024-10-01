@@ -13,7 +13,7 @@ export default {
     copy({
       targets: [
         { src: 'src/template/.*', dest: 'dist/template' },
-        { src: 'src/template/**/*', dest: 'dist/template' },
+        { src: 'src/template/*', dest: 'dist/template' },
       ]
     })]
 };

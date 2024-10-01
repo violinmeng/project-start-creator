@@ -1,34 +1,21 @@
-import { ProjectCreator } from "./creators/ProjectCreator";
-import { CppProjectCreator } from "./creators/CppProjectCreator";
-import { SwiftProjectCreator } from "./creators/SwiftProjectCreator";
-import { RustProjectCreator } from "./creators/RustProjectCreator";
-import { JavascriptProjectCreator } from "./creators/JavascriptProjectCreator";
-import { TypescriptProjectCreator } from "./creators/TypescriptProjectCreator";
-import { ProjectConfig } from 'project-creator-base';
-
-export enum Language {
-    CPP = 'cpp',
-    SWIFT = 'swift',
-    RUST = 'rust',
-    JAVASCRIPT = 'javascript',
-    TYPESCRIPT = 'typescript',
-}
-
+import { ProjectConfig, LangCreatorPlugin } from 'project-creator-base';
+import { CppLangCreatorPlugin } from "cpp-template-plugin";
 export class ProjectCreatorFactory {
-    static createProjectCreator(lang: Language, config: ProjectConfig): ProjectCreator {
-        switch (lang) {
-            case Language.CPP:
-                return new CppProjectCreator(config);
-            case Language.SWIFT:
-                return new SwiftProjectCreator(config);
-            case Language.RUST:
-                return new RustProjectCreator(config);
-            case Language.JAVASCRIPT:
-                return new JavascriptProjectCreator(config);
-            case Language.TYPESCRIPT:
-                return new TypescriptProjectCreator(config);
-            default:
-                throw new Error('Unsupported language');
+    static createProjectCreator(lang: string, config: ProjectConfig) {
+
+        const creatorPlugins: LangCreatorPlugin[] = [
+            new CppLangCreatorPlugin(config, process.cwd()),
+        ];
+
+        const plugin = creatorPlugins.find(plugin => plugin.supportLang() === lang)
+        if (plugin) {
+            if (plugin.validateTargetTypes()) {
+                plugin.createProject();
+            } else {
+                throw new Error('Exist unsupported target type');
+            }
+        } else {
+            throw new Error('Unsupported language');
         }
     }
 }
